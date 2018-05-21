@@ -1,0 +1,25 @@
+{
+  "name": "grunt-openpgp-form",
+  "version": "0.1.0",
+  "description": "An experimental task to perform OpenPGP.js operations using grunt.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stripthis/grunt-openpgp.git"
+  },
+  "license": "AGPL-3.0",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "devDependencies": {
+    "grunt": "~1.0.2",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-htmlmin": "^2.4.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-eslint": "^20.1.0"
+  },
+  "dependencies": {
+    "openpgp": "3.0.10",
+    "w3cjs": "^0.4.0"
+  }
+}
