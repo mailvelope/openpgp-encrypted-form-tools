@@ -12,13 +12,15 @@
     "npm": ">=5"
   },
   "devDependencies": {
-    "grunt": "~1.0.2",
+    "grunt": "~1.0.3",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-htmlmin": "^2.4.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-eslint": "^20.1.0"
   },
   "dependencies": {
+    "dompurify": "^1.0.4",
+    "jsdom": "^11.11.0",
     "openpgp": "3.0.10",
     "w3cjs": "^0.4.0"
   }

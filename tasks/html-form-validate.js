@@ -45,7 +45,7 @@ module.exports = function(grunt) {
       const html = grunt.file.read(filepath);
       const asyncTask = validateHtml(html, this.options())
       .catch(error => {
-        grunt.log.error(`HTML validation for form in file "${file.dest}".`);
+        grunt.log.error(`${filepath} contains some errors`);
         grunt.log.error(error.message);
         grunt.fail.warn(new Error('Fix errors to continue.'));
       });
