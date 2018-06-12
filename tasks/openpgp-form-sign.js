@@ -52,7 +52,7 @@ module.exports = function(grunt) {
   }
 
   /**
-   * Format <pgp-encrypted-form> tag
+   * Format <openpgp-encrypted-form> tag
    *
    * @param {string} signature
    * @param {string} html
@@ -62,7 +62,8 @@ module.exports = function(grunt) {
     signature = signature.split('\n')
     .filter(line => !(line.startsWith('---') || line.startsWith('Version') || line.startsWith('Comment')))
     .join('').replace(/\r?\n|\r/g, '');
-    return `<pgp-encrypted-form signature="${signature}"><script type="text/template">${html}</script></pgp-encrypted-form>`;
+    const id = 'form-' + signature.substr(signature.length - 4); // use checksum as id
+    return `<openpgp-encrypted-form id="${id}" signature="${signature}"><script type="text/template">${html}</script></openpgp-encrypted-form>`;
   }
 
   /**
