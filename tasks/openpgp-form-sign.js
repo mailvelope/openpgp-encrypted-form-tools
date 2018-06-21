@@ -3,12 +3,11 @@
  * Licensed under the GNU Affero General Public License version 3
  */
 const openpgp = require('openpgp');
-const { JSDOM } = require('jsdom');
+const {JSDOM} = require('jsdom');
 const createDOMPurify = require('dompurify');
 const inquirer = require('inquirer');
 
 module.exports = function(grunt) {
-
   /**
    * Remove all non whitelisted tags and properties
    *
@@ -38,20 +37,20 @@ module.exports = function(grunt) {
   /**
    * Validate the grunt task options
    *
-   * @throws Error if the secretKey option is missing on file does not exist
+   * @throws Error if the seckey option is missing on file does not exist
    * @param {Object} options
    * @returns {Object} options
    */
   function validateOptions(options) {
-    if (!options.secretKey) {
+    if (!options.seckey) {
       throw new Error('The secret key is missing in the options.');
     }
-    if (!grunt.file.exists(options.secretKey)) {
+    if (!grunt.file.exists(options.seckey)) {
       throw new Error('The secret key file does not exist.');
     }
     // Validate private key
-    const armoredPrivateKey = grunt.file.read(options.secretKey);
-    let privateKey = openpgp.key.readArmored(armoredPrivateKey);
+    const armoredPrivateKey = grunt.file.read(options.seckey);
+    const privateKey = openpgp.key.readArmored(armoredPrivateKey);
     if (privateKey.err) {
       throw new Error(privateKey.err[0].message);
     }
@@ -69,8 +68,8 @@ module.exports = function(grunt) {
     // if passphrase is provided in options ignore
     if (!options.passphrase) {
       // if private key is not encrypted, prompt
-      const armoredPrivateKey = grunt.file.read(options.secretKey);
-      let privateKey = openpgp.key.readArmored(armoredPrivateKey);
+      const armoredPrivateKey = grunt.file.read(options.seckey);
+      const privateKey = openpgp.key.readArmored(armoredPrivateKey);
       if (!privateKey.keys[0].primaryKey.isDecrypted) {
         const answers = await inquirer.prompt([{
           type: 'password',
@@ -94,8 +93,32 @@ module.exports = function(grunt) {
     signature = signature.split('\n')
     .filter(line => !(line.startsWith('---') || line.startsWith('Version') || line.startsWith('Comment')))
     .join('').replace(/\r?\n|\r/g, '');
-    const id = 'form-' + signature.substr(signature.length - 4); // use checksum as id
-    return `<openpgp-encrypted-form id="${id}" signature="${signature}"><script type="text/template">${html}</script></openpgp-encrypted-form>`;
+    const checksum = signature.substr(signature.length - 4);
+    return `<openpgp-encrypted-form id="form-${checksum}" signature="${signature}"><script type="text/template">${html}</script></openpgp-encrypted-form>`;
+  }
+
+  /**
+   * Format a html document
+   *
+   * @param {string} signature
+   * @param {string} html
+   * @returns {string} new tag
+   */
+  async function formatDocument(cleartext, options) {
+    if (options.document) {
+      cleartext =
+`<!DOCTYPE html>
+<html lang="en">
+  <head>
+	  <meta charset="utf-8">
+    <title>Mailvelope OpenPGP Encrypted Form</title>
+  </head>
+  <body>
+		${cleartext}
+  </body>
+</html>`;
+    }
+    return Promise.resolve(cleartext);
   }
 
   /**
@@ -116,7 +139,7 @@ module.exports = function(grunt) {
    * @param {Object} options
    */
   async function signMessage(message, options) {
-    const armoredPrivateKey = grunt.file.read(options.secretKey);
+    const armoredPrivateKey = grunt.file.read(options.seckey);
     let privateKey = openpgp.key.readArmored(armoredPrivateKey);
     if (privateKey.err) {
       throw new Error(privateKey.err[0].message);
@@ -145,7 +168,7 @@ module.exports = function(grunt) {
     }
 
     const tasks = [];
-    let task = getPassphrase(options).then(() => {
+    tasks.push(getPassphrase(options).then(() => {
       // Iterate over all specified file groups.
       this.files.forEach(file => {
         const filepath = file.src[0];
@@ -155,16 +178,16 @@ module.exports = function(grunt) {
         }
         const cleanHtml = getCleanFormHtml(grunt.file.read(filepath));
         const asyncTask = signMessage(cleanHtml, options)
-          .then(signature => formatTag(signature, cleanHtml))
-          .then(cleartext => writeOnFile(file.dest, cleartext))
-          .catch(error => {
-            grunt.log.error(`File "${file.dest}" not created.`);
-            grunt.log.error(error.message);
-          });
+        .then(signature => formatTag(signature, cleanHtml))
+        .then(cleartext => formatDocument(cleartext, options))
+        .then(cleartext => writeOnFile(file.dest, cleartext))
+        .catch(error => {
+          grunt.log.error(`File "${file.dest}" not created.`);
+          grunt.log.error(error.message);
+        });
         tasks.push(asyncTask);
       });
-    });
-    tasks.push(task);
+    }));
 
     Promise.all(tasks).then(this.async());
   });

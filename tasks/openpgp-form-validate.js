@@ -3,7 +3,7 @@
  * Licensed under the GNU Affero General Public License version 3
  */
 const createDOMPurify = require('dompurify');
-const { JSDOM } = require('jsdom');
+const {JSDOM} = require('jsdom');
 
 module.exports = function(grunt) {
   const dom = new JSDOM('');
@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 
   function createElementFromHTML(htmlString) {
     // Replace DOMParser approach as it's not available in JSDOM
-    var div = dom.window.document.createElement('div');
+    const div = dom.window.document.createElement('div');
     div.innerHTML = htmlString.trim();
     return div;
   }
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
   }
 
   function assertEncoding(formElement) {
-    let enctype = formElement.getAttribute('data-enctype');
+    const enctype = formElement.getAttribute('data-enctype');
     if (!enctype) {
       return true; // empty is allowed, defaults to url
     }
@@ -74,10 +74,8 @@ module.exports = function(grunt) {
 
   // main
   grunt.registerMultiTask('openpgp-form-validate', 'Generate a signed OpenPGP form tag (Experimental)', function() {
-
     // Iterate over all specified file groups.
-    const tasks = [];
-    let fail = false;
+    let failed = false;
 
     this.files.forEach(file => {
       const filepath = file.src[0];
@@ -87,7 +85,7 @@ module.exports = function(grunt) {
       }
       const html = grunt.file.read(filepath);
       const form = getCleanFormElement(html);
-      let errors = [];
+      const errors = [];
 
       // Run all the checks before exiting
       // to display maximum amount of info on screen
@@ -107,16 +105,16 @@ module.exports = function(grunt) {
         errors.push(error);
       }
 
-      if(errors.length) {
-        fail = true;
+      if (errors.length) {
+        failed = true;
         grunt.log.error(`Form file "${filepath}" contains errors:`);
         errors.forEach((error, i) => {
-          grunt.log.error(`${i+1}. ${error.message} `);
+          grunt.log.error(`${i + 1}. ${error.message} `);
         });
       }
     });
 
-    if(fail) {
+    if (failed) {
       grunt.fail.warn('Fix errors to continue.');
     }
   });

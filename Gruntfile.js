@@ -5,8 +5,10 @@
 module.exports = function(grunt) {
   const seckey = grunt.option('seckey');
   const destination = grunt.option('destination') || 'tests/tmp';
+  const document = grunt.option('document') || false;
   const origin = grunt.option('origin') || 'tests/fixtures/forms/errors';
   const passphrase = grunt.option('passphrase');
+  const clean = grunt.option('clean');
 
   // Target for watch and linting
   const target = [
@@ -17,13 +19,12 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-
     clean: {
       build: {
-        src: ['tests/tmp']
+        src: [destination]
       },
       min: {
-        src: [destination + '/min']
+        src: [`${destination}/min`]
       }
     },
 
@@ -49,7 +50,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: origin,
           src: ['*.html'],
-          dest: destination + '/min',
+          dest: `${destination}/min`,
         }]
       },
     },
@@ -73,13 +74,10 @@ module.exports = function(grunt) {
     'openpgp-form-sign': {
       task: {
         expand: true,
-        cwd: destination + '/min',
+        cwd: `${destination}/min`,
         src: ['*.html'],
         dest: destination,
-        options: {
-          secretKey: seckey,
-          passphrase: passphrase
-        }
+        options: {seckey, passphrase, document}
       }
     },
 
@@ -105,7 +103,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // By default, lint and run all tests.
-  grunt.registerTask('default', ['clean', 'html-form-validate', 'openpgp-form-validate', 'htmlmin', 'openpgp-form-sign', 'clean:min']);
+  const task = ['html-form-validate', 'openpgp-form-validate', 'htmlmin', 'openpgp-form-sign', 'clean:min'];
+  if (clean) {
+    task.unshift('clean');
+  }
+  grunt.registerTask('default', task);
   grunt.registerTask('validate', ['html-form-validate', 'openpgp-form-validate']);
   grunt.registerTask('lint', ['eslint']);
 };

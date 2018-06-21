@@ -75,5 +75,17 @@ Default value: 'test/tmp'
 
 A directory where the minified and signed for will be placed.
 
+#### options.document
+Type: `Bool`
+Default value: false
+
+If you want to output a full HTML document or only the openpgp-encrypted-form tag.
+
+#### options.clean
+Type: `Bool`
+Default value: false
+
+Weather you want to delete the destination folder prior build.
+
 ## Contributing
 Lint and test your code using `grunt lint`.
