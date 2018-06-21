@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "dompurify": "^1.0.4",
+    "inquirer": "^6.0.0",
     "jsdom": "^11.11.0",
     "openpgp": "3.0.10",
     "w3cjs": "^0.4.0"

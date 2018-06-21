@@ -5,6 +5,7 @@
 const openpgp = require('openpgp');
 const { JSDOM } = require('jsdom');
 const createDOMPurify = require('dompurify');
+const inquirer = require('inquirer');
 
 module.exports = function(grunt) {
 
@@ -47,6 +48,37 @@ module.exports = function(grunt) {
     }
     if (!grunt.file.exists(options.secretKey)) {
       throw new Error('The secret key file does not exist.');
+    }
+    // Validate private key
+    const armoredPrivateKey = grunt.file.read(options.secretKey);
+    let privateKey = openpgp.key.readArmored(armoredPrivateKey);
+    if (privateKey.err) {
+      throw new Error(privateKey.err[0].message);
+    }
+    return options;
+  }
+
+  /**
+   * Return the options with the passphrase set
+   * if needs be capture from the cli prompt
+   *
+   * @param options
+   * @returns {Promise<Object>} options
+   */
+  async function getPassphrase(options) {
+    // if passphrase is provided in options ignore
+    if (!options.passphrase) {
+      // if private key is not encrypted, prompt
+      const armoredPrivateKey = grunt.file.read(options.secretKey);
+      let privateKey = openpgp.key.readArmored(armoredPrivateKey);
+      if (!privateKey.keys[0].primaryKey.isDecrypted) {
+        const answers = await inquirer.prompt([{
+          type: 'password',
+          message: 'Enter your passphrase:',
+          name: 'passphrase'
+        }]);
+        options.passphrase = answers.passphrase;
+      }
     }
     return options;
   }
@@ -102,7 +134,7 @@ module.exports = function(grunt) {
   }
 
   // main
-  grunt.registerMultiTask('openpgp-form-sign', 'Generate a signed OpenPGP form tag (Experimental)', function() {
+  grunt.registerMultiTask('openpgp-form-sign', 'Generate a signed OpenPGP form tag (Experimental)', async function() {
     // Get and validate options
     let options;
     try {
@@ -112,24 +144,27 @@ module.exports = function(grunt) {
       return false;
     }
 
-    // Iterate over all specified file groups.
     const tasks = [];
-    this.files.forEach(file => {
-      const filepath = file.src[0];
-      if (!grunt.file.exists(filepath)) {
-        grunt.log.warn(`Form file "${filepath}" not found.`);
-        return false;
-      }
-      const cleanHtml = getCleanFormHtml(grunt.file.read(filepath));
-      const asyncTask = signMessage(cleanHtml, options)
-      .then(signature => formatTag(signature, cleanHtml))
-      .then(cleartext => writeOnFile(file.dest, cleartext))
-      .catch(error => {
-        grunt.log.error(`File "${file.dest}" not created.`);
-        grunt.log.error(error.message);
+    let task = getPassphrase(options).then(() => {
+      // Iterate over all specified file groups.
+      this.files.forEach(file => {
+        const filepath = file.src[0];
+        if (!grunt.file.exists(filepath)) {
+          grunt.log.warn(`Form file "${filepath}" not found.`);
+          return false;
+        }
+        const cleanHtml = getCleanFormHtml(grunt.file.read(filepath));
+        const asyncTask = signMessage(cleanHtml, options)
+          .then(signature => formatTag(signature, cleanHtml))
+          .then(cleartext => writeOnFile(file.dest, cleartext))
+          .catch(error => {
+            grunt.log.error(`File "${file.dest}" not created.`);
+            grunt.log.error(error.message);
+          });
+        tasks.push(asyncTask);
       });
-      tasks.push(asyncTask);
     });
+    tasks.push(task);
 
     Promise.all(tasks).then(this.async());
   });

@@ -20,39 +20,60 @@ grunt.loadNpmTasks('grunt-openpgp-forms');
 ## The "openpgp_forms" task
 
 ### Overview
-In your project's Gruntfile, add a section named `openpgp_forms` to the data object passed into `grunt.initConfig()`.
+In the project Gruntfile you can find an example of configuration that you can adapt for your own project.
+If you want to test it you can run it as follow
 
-```js
-grunt.initConfig({
-  'openpgp-form': {
-    test: {
-      expand: true,
-      cwd: 'tests/tmp/min',
-      src: ['*.html'],
-      dest: 'tests/tmp',
-      options: {
-        secretKey: 'tests/fixtures/keys/0C3C3F1B.sec.asc'
-      }
-    }
-  }
-});
+```
+grunt\
+  --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
+  --origin=tests/fixtures/forms/success/\
+  --destination=tests/tmp\
 ```
 
-Check the project Gruntfile for a complete build example.
+To tests HTML validation error you can try (with or without `--force` option):
+```
+grunt\
+  --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
+  --origin=tests/fixtures/forms/errors/\
+  --destination=tests/tmp\
+  --force
+```
+
+To tests password prompt you can try (with or without `--force` option):
+```
+grunt\
+  --seckey=tests/fixtures/keys/5D9B054F.sec.asc\
+  --origin=tests/fixtures/forms/errors/\
+  --destination=tests/ada\
+  --passphrase=ada@passbolt.com
+```
 
 ### Options
 
-#### options.secretKey
+#### options.seckey
 Type: `String`
-Default value: 'tests/fixtures/keys/0C3C3F1B.sec.asc'
+Default value: undefined
 
 A file path where the key for signing is located.
 
 #### options.passphrase
 Type: `String`
-Default value: null
+Default value: undefined
 
-A the key passphrase to sign.
+A the passphrase to decrypt the signing key if needed.
+If key is encrypted and passphrase is empty a password prompt will be shown.
+
+#### options.origin
+Type: `String`
+Default value: 'tests/fixtures/forms/errors'
+
+A directory where the origin html forms are located
+
+#### options.destination
+Type: `String`
+Default value: 'test/tmp'
+
+A directory where the minified and signed for will be placed.
 
 ## Contributing
 Lint and test your code using `grunt lint`.

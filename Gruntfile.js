@@ -3,17 +3,17 @@
  * Licensed under the GNU Affero General Public License version 3
  */
 module.exports = function(grunt) {
+  const seckey = grunt.option('seckey');
+  const destination = grunt.option('destination') || 'tests/tmp';
+  const origin = grunt.option('origin') || 'tests/fixtures/forms/errors';
+  const passphrase = grunt.option('passphrase');
+
   // Target for watch and linting
   const target = [
     '*.js',
     'config/*.js',
     'tasks/**/*.js',
   ];
-
-  const path = {
-    'formSuccess': 'tests/fixtures/forms/success',
-    'formErrors': 'tests/fixtures/forms/errors',
-  };
 
   // Project configuration.
   grunt.initConfig({
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         src: ['tests/tmp']
       },
       min: {
-        src: ['tests/tmp/min']
+        src: [destination + '/min']
       }
     },
 
@@ -40,54 +40,45 @@ module.exports = function(grunt) {
 
     // Development configuration to be run (and then tested).
     htmlmin: {
-      test: {
+      task: {
         options: {
           removeComments: true,
           collapseWhitespace: true
         },
         files: [{
           expand: true,
-          cwd: path.formSuccess,
+          cwd: origin,
           src: ['*.html'],
-          dest: 'tests/tmp/min',
+          dest: destination + '/min',
         }]
       },
     },
 
     'html-form-validate': {
-      'test-success': {
+      task: {
         expand: true,
-        cwd: path.formSuccess,
-        src: ['*.html']
-      },
-      'test-error': {
-        expand: true,
-        cwd: path.formErrors,
+        cwd: origin,
         src: ['*.html']
       }
     },
 
     'openpgp-form-validate': {
-      'test-success': {
+      task: {
         expand: true,
-        cwd: path.formSuccess,
-        src: ['*.html']
-      },
-      'test-error': {
-        expand: true,
-        cwd: path.formErrors,
+        cwd: origin,
         src: ['*.html']
       }
     },
 
     'openpgp-form-sign': {
-      test: {
+      task: {
         expand: true,
-        cwd: 'tests/tmp/min',
+        cwd: destination + '/min',
         src: ['*.html'],
-        dest: 'tests/tmp',
+        dest: destination,
         options: {
-          secretKey: 'tests/fixtures/keys/0C3C3F1B.sec.asc'
+          secretKey: seckey,
+          passphrase: passphrase
         }
       }
     },
