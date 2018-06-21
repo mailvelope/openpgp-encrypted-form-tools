@@ -78,6 +78,16 @@ module.exports = function(grunt) {
         src: ['*.html'],
         dest: destination,
         options: {seckey, passphrase, document}
+      },
+    },
+
+    'openpgp-html-sanitize': {
+      task: {
+        expand: true,
+        cwd: origin,
+        src: ['*.gpg'],
+        dest: destination,
+        options: {seckey, passphrase}
       }
     },
 
@@ -102,12 +112,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // By default, lint and run all tests.
   const task = ['html-form-validate', 'openpgp-form-validate', 'htmlmin', 'openpgp-form-sign', 'clean:min'];
   if (clean) {
     task.unshift('clean');
   }
   grunt.registerTask('default', task);
+  grunt.registerTask('build', task);
+  grunt.registerTask('decrypt', 'openpgp-html-sanitize');
   grunt.registerTask('validate', ['html-form-validate', 'openpgp-form-validate']);
   grunt.registerTask('lint', ['eslint']);
 };

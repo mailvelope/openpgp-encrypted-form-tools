@@ -7,7 +7,7 @@ const crypto = require('./lib/crypto');
 const format = require('./lib/format');
 
 module.exports = function(grunt) {
-  grunt.registerMultiTask('openpgp-form-sign', 'Generate a signed OpenPGP form tag (Experimental)', async function() {
+  grunt.registerMultiTask('openpgp-html-sanitize', 'Sanitize an OpenPGP message containing HTML (Experimental)', async function() {
     const done = this.async();
     const tasks = [];
     let options = this.options();
@@ -17,20 +17,21 @@ module.exports = function(grunt) {
       grunt.log.error(error.message);
       return false;
     }
-
     this.files.forEach(file => {
       const filepath = file.src[0];
       if (!grunt.file.exists(filepath)) {
         grunt.log.warn(`Form file "${filepath}" not found.`);
         return false;
       }
-      const cleanHtml = clean.getCleanFormHtml(grunt.file.read(filepath));
-      const asyncTask = crypto.signMessage(cleanHtml, options)
-      .then(signature => {
-        let cleartext = format.getEncryptedFormTag(signature, cleanHtml);
-        cleartext = format.getHtmlDocument(cleartext, options);
-        grunt.file.write(file.dest, cleartext);
-        grunt.log.writeln(`File "${file.dest}" created.`);
+
+      const armoredData = grunt.file.read(filepath);
+      const asyncTask = crypto.decrypt(armoredData, options)
+      .then(cleartext => {
+        const cleanHtml = clean.getCleanHtmlForDisplay(cleartext.data);
+        const document = format.getHtmlDocument(cleanHtml, {document: true, sandbox: true});
+        const dest = `${this.data.dest}/${cleartext.filename}`;
+        grunt.file.write(dest, document);
+        grunt.log.writeln(`File "${dest}" created.`);
       })
       .catch(error => {
         grunt.log.error(`File "${file.dest}" not created.`);

@@ -24,7 +24,7 @@ In the project Gruntfile you can find an example of configuration that you can a
 If you want to test it you can run it as follow
 
 ```
-grunt\
+grunt build\
   --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
   --origin=tests/fixtures/forms/success/\
   --destination=tests/tmp\
@@ -32,7 +32,7 @@ grunt\
 
 To tests HTML validation error you can try (with or without `--force` option):
 ```
-grunt\
+grunt build\
   --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
   --origin=tests/fixtures/forms/errors/\
   --destination=tests/tmp\
@@ -41,7 +41,7 @@ grunt\
 
 To tests password prompt you can try (with or without `--force` option):
 ```
-grunt\
+grunt build\
   --seckey=tests/fixtures/keys/5D9B054F.sec.asc\
   --origin=tests/fixtures/forms/errors/\
   --destination=tests/ada\
