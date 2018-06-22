@@ -36,7 +36,9 @@ clean.getCleanFormHtml = function(dirtyHtml) {
  * @returns {*}
  */
 clean.getCleanHtmlForDisplay = function(dirtyHtml) {
-  return dompurify.sanitize(dirtyHtml);
+  return dompurify.sanitize(dirtyHtml, {
+    ALLOWED_URI_REGEXP: /^data:(text|image).*/i
+  });
 };
 
 /**

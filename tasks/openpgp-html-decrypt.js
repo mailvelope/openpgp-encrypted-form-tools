@@ -7,7 +7,7 @@ const crypto = require('./lib/crypto');
 const format = require('./lib/format');
 
 module.exports = function(grunt) {
-  grunt.registerMultiTask('openpgp-html-sanitize', 'Sanitize an OpenPGP message containing HTML (Experimental)', async function() {
+  grunt.registerMultiTask('openpgp-html-decrypt', 'Decrypt and sanitize an OpenPGP message containing HTML (Experimental)', async function() {
     const done = this.async();
     const tasks = [];
     let options = this.options();
@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       .then(cleartext => {
         const cleanHtml = clean.getCleanHtmlForDisplay(cleartext.data);
         const document = format.getHtmlDocument(cleanHtml, {document: true, sandbox: true});
-        const dest = `${this.data.dest}/${cleartext.filename}`;
+        const dest = `${this.data.dest}/${Date.now()}_${cleartext.filename}`;
         grunt.file.write(dest, document);
         grunt.log.writeln(`File "${dest}" created.`);
       })

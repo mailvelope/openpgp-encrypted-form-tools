@@ -17,7 +17,7 @@ format.getHtmlDocument = function(cleartext, options) {
     <title>Mailvelope OpenPGP Encrypted Form Sandbox</title>
   </head>
   <body>
-    <iframe srcdoc='${cleartext}'></iframe>
+    <iframe sandbox srcdoc='${cleartext}' frameborder="0" style="position:absolute;overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
   </body>
 </html>`;
     } else {
@@ -33,11 +33,8 @@ format.getHtmlDocument = function(cleartext, options) {
 </html>`;
     }
   }
-  console.log(cleartext);
   return cleartext;
 };
-
-
 
 /**
  * Format <openpgp-encrypted-form> tag
