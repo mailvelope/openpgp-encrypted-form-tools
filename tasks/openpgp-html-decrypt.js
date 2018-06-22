@@ -10,9 +10,10 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('openpgp-html-decrypt', 'Decrypt and sanitize an OpenPGP message containing HTML (Experimental)', async function() {
     const done = this.async();
     const tasks = [];
-    let options = this.options();
+    const options = this.options();
     try {
       options.privateKey = await crypto.getPrivateKey(options, grunt);
+      options.publicKey = await crypto.getPublicKey(options, grunt);
     } catch (error) {
       grunt.log.error(error.message);
       return false;
@@ -23,7 +24,6 @@ module.exports = function(grunt) {
         grunt.log.warn(`Form file "${filepath}" not found.`);
         return false;
       }
-
       const armoredData = grunt.file.read(filepath);
       const asyncTask = crypto.decrypt(armoredData, options)
       .then(cleartext => {

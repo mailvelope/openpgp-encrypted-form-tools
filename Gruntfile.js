@@ -4,6 +4,7 @@
  */
 module.exports = function(grunt) {
   const seckey = grunt.option('seckey');
+  const pubkey = grunt.option('pubkey');
   const destination = grunt.option('destination') || 'tests/tmp';
   const document = grunt.option('document') || false;
   const origin = grunt.option('origin') || 'tests/fixtures/forms/errors';
@@ -87,7 +88,7 @@ module.exports = function(grunt) {
         cwd: origin,
         src: ['*.gpg'],
         dest: destination,
-        options: {seckey, passphrase}
+        options: {seckey, passphrase, pubkey}
       }
     },
 

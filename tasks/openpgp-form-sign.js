@@ -10,14 +10,13 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('openpgp-form-sign', 'Generate a signed OpenPGP form tag (Experimental)', async function() {
     const done = this.async();
     const tasks = [];
-    let options = this.options();
+    const options = this.options();
     try {
       options.privateKey = await crypto.getPrivateKey(options, grunt);
     } catch (error) {
       grunt.log.error(error.message);
       return false;
     }
-
     this.files.forEach(file => {
       const filepath = file.src[0];
       if (!grunt.file.exists(filepath)) {
@@ -38,7 +37,6 @@ module.exports = function(grunt) {
       });
       tasks.push(asyncTask);
     });
-
     Promise.all(tasks).then(done);
   });
 };

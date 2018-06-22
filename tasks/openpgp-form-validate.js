@@ -6,12 +6,8 @@ const clean = require('./lib/clean');
 const validate = require('./lib/validate');
 
 module.exports = function(grunt) {
-
-  // main
   grunt.registerMultiTask('openpgp-form-validate', 'Generate a signed OpenPGP form tag (Experimental)', function() {
-    // Iterate over all specified file groups.
     let failed = false;
-
     this.files.forEach(file => {
       const filepath = file.src[0];
       if (!grunt.file.exists(filepath)) {
@@ -39,7 +35,6 @@ module.exports = function(grunt) {
       } catch (error) {
         errors.push(error);
       }
-
       if (errors.length) {
         failed = true;
         grunt.log.error(`Form file "${filepath}" contains errors:`);
@@ -48,7 +43,6 @@ module.exports = function(grunt) {
         });
       }
     });
-
     if (failed) {
       grunt.fail.warn('Fix errors to continue.');
     }

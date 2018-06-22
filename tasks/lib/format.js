@@ -21,7 +21,7 @@ format.getHtmlDocument = function(cleartext, options) {
   </body>
 </html>`;
     } else {
-    cleartext = `<!DOCTYPE html>
+      cleartext = `<!DOCTYPE html>
 <html lang="en">
   <head>
 	  <meta charset="utf-8">
@@ -45,10 +45,9 @@ format.getHtmlDocument = function(cleartext, options) {
  */
 format.getEncryptedFormTag = function(signature, html) {
   signature = signature.split('\n')
-    .filter(line => !(line.startsWith('---') || line.startsWith('Version') || line.startsWith('Comment')))
-    .join('').replace(/\r?\n|\r/g, '');
+  .filter(line => !(line.startsWith('---') || line.startsWith('Version') || line.startsWith('Comment')))
+  .join('').replace(/\r?\n|\r/g, '');
   const checksum = signature.substr(signature.length - 4);
   return `<openpgp-encrypted-form id="form-${checksum}" signature="${signature}"><script type="text/template">${html}</script></openpgp-encrypted-form>`;
 };
-
 module.exports = format;

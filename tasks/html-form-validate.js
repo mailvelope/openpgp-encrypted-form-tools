@@ -5,10 +5,7 @@
 const validate = require('./lib/validate');
 
 module.exports = function(grunt) {
-
-  // main
   grunt.registerMultiTask('html-form-validate', 'Validate an html form (Experimental)', function() {
-    // Iterate over all specified file groups.
     const tasks = [];
     this.files.forEach(file => {
       const filepath = file.src[0];

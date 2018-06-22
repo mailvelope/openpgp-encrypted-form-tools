@@ -8,7 +8,7 @@ const validate = {};
  * @param {Object} options
  * @returns {Promise<any>}
  */
-validate.W3C = function (html, options) {
+validate.W3C = function(html, options) {
   return new Promise((resolve, reject) => {
     w3cjs.validate({
       input: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>wrapper</title></head><body>${html}</body></html>`,
@@ -34,7 +34,7 @@ validate.W3C = function (html, options) {
  * @param formElement
  * @returns {boolean}
  */
-validate.assertAction = function (formElement) {
+validate.assertAction = function(formElement) {
   const action = formElement.getAttribute('data-action');
   if (!action) {
     return true; // allowed, it returns armored data to page
@@ -55,7 +55,7 @@ validate.assertAction = function (formElement) {
  * @param formElement
  * @returns {boolean}
  */
-validate.assertRecipient = function (formElement) {
+validate.assertRecipient = function(formElement) {
   const recipient = formElement.getAttribute('data-recipient');
   if (!recipient) {
     throw new Error('The encrypted form recipient cannot be empty.');
@@ -73,7 +73,7 @@ validate.assertRecipient = function (formElement) {
  * @param formElement
  * @returns {boolean}
  */
-validate.assertEncoding = function (formElement) {
+validate.assertEncoding = function(formElement) {
   const enctype = formElement.getAttribute('data-enctype');
   if (!enctype) {
     return true; // empty is allowed, defaults to url

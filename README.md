@@ -17,12 +17,16 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-openpgp-forms');
 ```
 
-## The "openpgp_forms" task
-
-### Overview
+## Overview
 In the project Gruntfile you can find an example of configuration that you can adapt for your own project.
-If you want to test it you can run it as follow
 
+## The build task
+
+This task allows you to create an <openpgp-encrypted-form> from a <form>.
+You will need to specify a secret key to sign the form. You will need to indicate where the html form is located
+and where you want the resulting file to be placed.
+
+If you want to test the task you can run it as follow:
 ```
 grunt build\
   --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
@@ -48,7 +52,7 @@ grunt build\
   --passphrase=ada@passbolt.com
 ```
 
-### Options
+### Build task options
 
 #### options.seckey
 Type: `String`
@@ -89,3 +93,61 @@ Weather you want to delete the destination folder prior build.
 
 ## Contributing
 Lint and test your code using `grunt lint`.
+
+## The decrypt task
+
+This task allows you to take the encrypted data collected via an <openpgp-encrypted-form> 
+with the HTML enctype set, and decrypt and sanitize it in a way that will be safe to be
+displayed in a browser.
+
+
+If you want to test the task you can run it as follow:
+```
+grunt decrypt\
+ --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
+ --pubkey=tests/fixtures/keys/5D9B054F.sec.asc\ 
+ --origin=tests/fixtures/data/\
+ --destination=tests/tmp\
+ --clean
+
+```
+
+### Build task options
+
+#### options.seckey
+Type: `String`
+Default value: undefined
+
+A file path where the key for signing is located.
+
+#### options.pubkey
+Type: `String`
+Default value: undefined
+
+A file path where the public key of the form data sender is located.
+If no public key is provided signature check will be skipped.
+
+#### options.passphrase
+Type: `String`
+Default value: undefined
+
+A the passphrase to decrypt the signing key if needed.
+If key is encrypted and passphrase is empty a password prompt will be shown.
+
+#### options.origin
+Type: `String`
+Default value: 'tests/fixtures/forms/errors'
+
+A directory where the origin html forms are located
+
+#### options.destination
+Type: `String`
+Default value: 'test/tmp'
+
+A directory where the minified and signed for will be placed.
+
+#### options.clean
+Type: `Bool`
+Default value: false
+
+Weather you want to delete the destination folder prior build.

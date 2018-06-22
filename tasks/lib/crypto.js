@@ -27,7 +27,7 @@ crypto.getPrivateKey = async function(options, grunt) {
   privateKey = privateKey.keys[0];
 
   // if passphrase is provided in options ignore
-  let passphrase = options.passphrase || undefined;
+  const passphrase = options.passphrase || undefined;
   if (!passphrase && !privateKey.primaryKey.isDecrypted) {
     const answers = await inquirer.prompt([{
       type: 'password',
@@ -42,6 +42,26 @@ crypto.getPrivateKey = async function(options, grunt) {
   }
 
   return privateKey;
+};
+
+/**
+ * Get and return the decrypted private key
+ *
+ * @throws Error if the seckey option is missing on file does not exist
+ * @param {Object} options
+ * @param {Object} grunt
+ * @returns {Object} options
+ */
+crypto.getPublicKey = async function(options, grunt) {
+  if (!options.pubkey) {
+    grunt.log.warn('No public key provided, signature will not be verified.');
+    return undefined;
+  }
+  if (!grunt.file.exists(options.pubkey)) {
+    throw new Error('The secret key file does not exist.');
+  }
+  const armoredPublicKey = grunt.file.read(options.pubkey);
+  return await openpgp.key.readArmored(armoredPublicKey);
 };
 
 /**
@@ -67,9 +87,16 @@ crypto.signMessage = async function(message, options) {
  * @param {Object} options
  */
 crypto.decrypt = async function(encryptedMessage, options) {
-  // todo: publicKeys: signingKeys
   const message = openpgp.message.readArmored(encryptedMessage);
-  return await openpgp.decrypt({message, privateKeys: [options.privateKey]});
+  const decryptOptions = {message, privateKeys: [options.privateKey]};
+  if (options.publicKey) {
+    decryptOptions.publicKeys = options.publicKey.keys;
+  }
+  const cleartext = await openpgp.decrypt(decryptOptions);
+  if (options.publicKey && !cleartext.signatures[0].valid) {
+    throw new Error('Could not verify the form sender signature.');
+  }
+  return cleartext;
 };
 
 module.exports = crypto;

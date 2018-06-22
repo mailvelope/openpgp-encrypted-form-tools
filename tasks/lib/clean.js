@@ -46,8 +46,7 @@ clean.getCleanHtmlForDisplay = function(dirtyHtml) {
  * @param dirtyHtml
  * @returns {HTMLFormElement}
  */
-clean.getCleanFormElement = function (dirtyHtml) {
-
+clean.getCleanFormElement = function(dirtyHtml) {
   const html = dompurify.sanitize(dirtyHtml, {
     ALLOWED_TAGS: ['form'],
     ALLOWED_ATTR: ['data-action', 'data-recipient', 'data-enctype']
