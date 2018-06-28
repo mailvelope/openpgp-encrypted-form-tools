@@ -47,8 +47,8 @@ To tests password prompt you can try (with or without `--force` option):
 ```
 grunt build\
   --seckey=tests/fixtures/keys/5D9B054F.sec.asc\
-  --origin=tests/fixtures/forms/errors/\
-  --destination=tests/ada\
+  --origin=tests/fixtures/forms/ada/\
+  --destination=tests/tmp\
   --passphrase=ada@passbolt.com
 ```
 
@@ -105,8 +105,8 @@ If you want to test the task you can run it as follow:
 ```
 grunt decrypt\
  --seckey=tests/fixtures/keys/0C3C3F1B.sec.asc\
- --pubkey=tests/fixtures/keys/5D9B054F.sec.asc\ 
- --origin=tests/fixtures/data/\
+ --pubkey=tests/fixtures/keys/5D9B054F.sec.asc\
+ --origin=tests/fixtures/data\
  --destination=tests/tmp\
  --clean
 

@@ -18,7 +18,7 @@ clean.getCleanFormHtml = function(dirtyHtml) {
     ],
     ALLOWED_ATTR: [
       // default html attributes
-      'accesskey', 'class', 'dir', 'hidden', 'id', 'lang', 'tabindex', 'title', 'action', 'name', 'alt',
+      'accesskey', 'class', 'dir', 'hidden', 'id', 'lang', 'tabindex', 'title', 'name', 'alt',
       'checked', 'dirname', 'disabled', 'for', 'required', 'list', 'max', 'maxlength', 'min', 'multiple',
       'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'step', 'type', 'value',
       // custom data attributes
