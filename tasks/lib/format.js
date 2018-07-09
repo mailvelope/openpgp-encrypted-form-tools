@@ -15,6 +15,7 @@ format.getHtmlDocument = function(cleartext, options) {
   <head>
 	  <meta charset="utf-8">
     <title>Mailvelope OpenPGP Encrypted Form Sandbox</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
   </head>
   <body>
     <iframe sandbox srcdoc='${cleartext}' frameborder="0" style="position:absolute;overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
