@@ -1,6 +1,7 @@
-# grunt-openpgp-forms
+# openpgp-encrypted-form-tools
 
 This is an experimental command line utility to generate encrypted form tags.
+
 
 ## Getting Started
 This plugin requires Grunt `1.0.2`
@@ -8,13 +9,13 @@ This plugin requires Grunt `1.0.2`
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
-npm install grunt-openpgp-forms --save-dev
+npm install openpgp-encrypted-form-tools --save-dev
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
 
 ```js
-grunt.loadNpmTasks('grunt-openpgp-forms');
+grunt.loadNpmTasks('openpgp-encrypted-form-tools');
 ```
 
 ## Overview

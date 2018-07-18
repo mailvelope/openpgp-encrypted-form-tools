@@ -1,10 +1,10 @@
 {
-  "name": "grunt-openpgp-form",
-  "version": "0.2.0",
+  "name": "openpgp-encrypted-form-tools",
+  "version": "0.3.0",
   "description": "An experimental task to perform OpenPGP.js operations using grunt.",
   "repository": {
     "type": "git",
-    "url": "git://github.com/stripthis/grunt-openpgp.git"
+    "url": "git://github.com/mailvelope/openpgp-encrypted-form-tools.git"
   },
   "license": "AGPL-3.0",
   "engines": {
@@ -16,10 +16,10 @@
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-htmlmin": "^2.4.0",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-eslint": "^20.1.0"
+    "grunt-eslint": "^20.2.0"
   },
   "dependencies": {
-    "dompurify": "^1.0.4",
+    "dompurify": "^1.0.6",
     "inquirer": "^6.0.0",
     "jsdom": "^11.11.0",
     "openpgp": "3.0.10",
