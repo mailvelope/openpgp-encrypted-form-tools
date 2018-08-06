@@ -11,7 +11,7 @@ const dompurify = createDOMPurify(dom.window);
  * @returns {*}
  */
 clean.getCleanFormHtml = function(dirtyHtml) {
-  return dompurify.sanitize(dirtyHtml, {
+  const cleanHtml = dompurify.sanitize(dirtyHtml, {
     ALLOWED_TAGS: [
       'bdi', 'bdo', 'br', 'datalist', 'div', 'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'input',
       'img', 'label', 'legend', 'optgroup', 'option', 'p', 'select', 'small', 'span', 'strong', 'textarea'
@@ -27,6 +27,8 @@ clean.getCleanFormHtml = function(dirtyHtml) {
     SAFE_FOR_TEMPLATES: false,
     SAFE_FOR_JQUERY: false
   });
+  // prevent script template breakout with </script> tag in whitelisted attributes
+  return cleanHtml.replace('</script>', '&lt;/script&gt;');
 };
 
 /**
@@ -36,9 +38,10 @@ clean.getCleanFormHtml = function(dirtyHtml) {
  * @returns {*}
  */
 clean.getCleanHtmlForDisplay = function(dirtyHtml) {
-  return dompurify.sanitize(dirtyHtml, {
+  const cleanHtml = dompurify.sanitize(dirtyHtml, {
     ALLOWED_URI_REGEXP: /^data:(text|image).*/i
   });
+  return cleanHtml.replace("'", '&apos;')
 };
 
 /**
