@@ -28,7 +28,7 @@ clean.getCleanFormHtml = function(dirtyHtml) {
     SAFE_FOR_JQUERY: false
   });
   // prevent script template breakout with </script> tag in whitelisted attributes
-  return cleanHtml.replace('</script>', '&lt;/script&gt;');
+  return cleanHtml.replace(/<\/script/i, '&lt;/script');
 };
 
 /**
